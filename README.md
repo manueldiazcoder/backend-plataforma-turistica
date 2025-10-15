@@ -103,24 +103,26 @@ Este repositorio incluye configuración para **Dev Containers** de VS Code (carp
 ├── .devcontainer/            # Configuración del entorno Dev Containers
 └── src/                      # Código fuente Java
 ```
-### 🌐 Accesos por defecto
+#### 🌐 Accesos por defecto
 Servicio     |  URL / Host                             |  Credenciales
 |------------|-----------------------------------------|--------------------------------------------|
 Backend API  |  http://localhost:8080                  |  — 
 Swagger UI   |  http://localhost:8080/swagger-ui.html  |  —
 PostgreSQL   |  localhost:5432                         |  user: `postgres` / pass: `postgres` / db: `plataforma_turistica`
 
-####🔑 Variables de entorno
+#### 🔑 Variables de entorno
 
 Si no usas Dev Containers, crea un archivo .env en la raíz del proyecto con las siguientes variables:
 
+```bash
 SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/plataforma_turistica
 SPRING_DATASOURCE_USERNAME=postgres
 SPRING_DATASOURCE_PASSWORD=postgres
 JWT_SECRET=mi_clave_secreta_segura
 JWT_EXPIRATION=86400000
+```
 
-🧪 Testing
+### 🧪 Testing
 
 Ejecuta las pruebas unitarias con:
 ```bash
@@ -130,15 +132,14 @@ mvn test
 🧠 Las pruebas utilizan JUnit 5 y Mockito, siguiendo buenas prácticas de aislamiento de capas y testing de casos de uso críticos.
 En futuras versiones se añadirán pruebas de integración automatizadas dentro del pipeline CI/CD.
 
-📚 Documentación de la API
+### 📚 Documentación de la API
 
 Una vez ejecutada la aplicación, accede a:
 
-Swagger UI: 👉 http://localhost:8080/swagger-ui.html
+- Swagger UI: 👉 http://localhost:8080/swagger-ui.html
+- OpenAPI JSON: 👉 http://localhost:8080/v3/api-docs
 
-OpenAPI JSON: 👉 http://localhost:8080/v3/api-docs
-
-🗺️ Endpoints principales (MVP)
+### 🗺️ Endpoints principales (MVP)
 Método   | Endpoint          | Descripción
 ----------|------------------|-------------------------------------------------------
 POST      | /auth/register   | Registro de usuarios (dueños o turistas)
@@ -148,36 +149,32 @@ GET       | /lugares         | Listar lugares turísticos registrados
 GET       | /map             | Obtener datos GeoJSON para el mapa interactivo
 GET       | /health          | Verificar el estado general de la API
 
-☁️ Despliegue
-🌍 Fase inicial
+### ☁️ Despliegue
+#### 🌍 Fase inicial
 
-Despliegue en Render o Railway (entornos gratuitos).
+- Despliegue en Render o Railway (entornos gratuitos).
+- Uso de Docker como método de despliegue unificado.
 
-Uso de Docker como método de despliegue unificado.
+#### 🚀 Fase de escalamiento
 
-🚀 Fase de escalamiento
+- Migración a AWS (EC2 + RDS) o GCP (Cloud Run + Cloud SQL).
+- Preparación de infraestructura como código con Terraform.
+- Contenedorización avanzada con Kubernetes (K3s / GKE).
 
-Migración a AWS (EC2 + RDS) o GCP (Cloud Run + Cloud SQL).
-
-Preparación de infraestructura como código con Terraform.
-
-Contenedorización avanzada con Kubernetes (K3s / GKE).
-
-👨‍💻 Autor
+### 👨‍💻 Autor
 
 Juan Manuel Díaz
 Desarrollador Full Stack | Java – Spring Boot – Angular – React Native
 
 📧 manuelcoder@hotmail.com
 
-🌐 linkedin.com/in/manueld1az
+🌐 https://linkedin.com/in/manuelcoder
 
-💻 github.com/manueldiazcoder
+💻 https://github.com/manueldiazcoder
 
-📝 Licencia
+### 📝 Licencia
 
 Este proyecto se distribuye bajo la licencia MIT.
-Consulta el archivo LICENSE
- para más información.
+Consulta el archivo LICENSE para más información.
 
-💬 “La mejor arquitectura es la que permite evolucionar sin miedo a romper lo que ya funciona.”
+### 💬 “La mejor arquitectura es la que permite evolucionar sin miedo a romper lo que ya funciona.”

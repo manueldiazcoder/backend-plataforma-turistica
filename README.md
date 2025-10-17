@@ -251,7 +251,7 @@ Desarrollador Full Stack | Java – Spring Boot – Angular – React Native
 
 ### 📝 Licencia
 
-Este proyecto se distribuye bajo la licencia **MIT**.  
+Este proyecto se distribuye bajo la licencia **COMMUNITY LICENSE**.  
 Consulta el archivo [`LICENSE`](./LICENSE) para más información.
 
 ### 💬 “La mejor arquitectura es la que permite evolucionar sin miedo a romper lo que ya funciona.”

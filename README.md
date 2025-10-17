@@ -149,6 +149,83 @@ GET       | /lugares         | Listar lugares turísticos registrados
 GET       | /map             | Obtener datos GeoJSON para el mapa interactivo
 GET       | /health          | Verificar el estado general de la API
 
+---
+
+## 🔄 Flujo de trabajo con Git (GitFlow Simplificado)
+
+Este proyecto utiliza un flujo de trabajo basado en **GitFlow simplificado**, una práctica estándar en proyectos profesionales para mantener el código limpio, organizado y escalable a futuro.
+
+### 🧱 Estructura de ramas principal
+```bash
+main
+│
+├── develop
+│ ├── feature/<nombre-de-la-funcionalidad>
+│ ├── bugfix/<nombre-del-fix>
+│ ├── release/<versión>
+│ └── hotfix/<nombre-del-hotfix>
+```
+
+- **`main`** → Contiene el código estable en producción.  
+- **`develop`** → Rama base para integrar nuevas funcionalidades.  
+- **`feature/*`** → Cada nueva funcionalidad o módulo se desarrolla aquí.  
+- **`bugfix/*`** → Correcciones de errores antes de una versión estable.  
+- **`release/*`** → Preparación y pruebas previas al lanzamiento.  
+- **`hotfix/*`** → Correcciones urgentes en producción.
+
+---
+
+### 💡 Convención de nombres de ramas
+
+| Tipo de rama | Ejemplo |
+|---------------|----------|
+| Feature | `feature/auth-jwt` |
+| Bugfix | `bugfix/fix-login-endpoint` |
+| Release | `release/v1.0.0` |
+| Hotfix | `hotfix/fix-db-connection` |
+
+---
+
+### 🧠 Convención de commits (Conventional Commits)
+
+Usa prefijos estándar en los mensajes de commit para mantener un historial claro y legible:
+
+| Tipo | Descripción | Ejemplo |
+|------|--------------|----------|
+| `feat:` | Nueva funcionalidad | `feat: add JWT authentication` |
+| `fix:` | Corrección de error | `fix: handle null pointer in AuthService` |
+| `chore:` | Tareas de mantenimiento | `chore: update dependencies` |
+| `docs:` | Cambios en documentación | `docs: add Git workflow section` |
+| `refactor:` | Refactorización de código | `refactor: improve service layer structure` |
+| `test:` | Añadir o actualizar tests | `test: add unit test for login flow` |
+
+---
+
+### 🧭 Flujo de trabajo básico
+
+#### 1️⃣ Crear una nueva rama para una funcionalidad
+```bash
+git checkout develop
+git pull origin develop
+git checkout -b feature/<nombre-de-la-funcionalidad>
+```
+
+#### 2️⃣ Trabajar y guardar cambios
+```bash
+git add .
+git commit -m "feat: descripción corta de la nueva funcionalidad"
+git push origin feature/<nombre-de-la-funcionalidad>
+```
+
+#### 3️⃣ Fusionar la funcionalidad en develop
+```bash
+git checkout develop
+git merge --no-ff feature/<nombre-de-la-funcionalidad>
+git push origin develop
+```
+
+⚙️ Cuando el proyecto sea estable, se generará una rama release/vX.X.X para preparar el lanzamiento, y luego se integrará en main.
+
 ### ☁️ Despliegue
 #### 🌍 Fase inicial
 
@@ -174,7 +251,7 @@ Desarrollador Full Stack | Java – Spring Boot – Angular – React Native
 
 ### 📝 Licencia
 
-Este proyecto se distribuye bajo la licencia MIT.
-Consulta el archivo LICENSE para más información.
+Este proyecto se distribuye bajo la licencia **MIT**.  
+Consulta el archivo [`LICENSE`](./LICENSE) para más información.
 
 ### 💬 “La mejor arquitectura es la que permite evolucionar sin miedo a romper lo que ya funciona.”

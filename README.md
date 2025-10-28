@@ -171,11 +171,11 @@ Para facilitar la conexión a la base de datos local de desarrollo, el proyecto 
 - Ve a **File → Import Servers...**
 - Selecciona el archivo `pgadmin_servers.json` (ubicado en `./docs/tecnica/db/pgadmin_servers.json`)
 
-4. Listo ✅
+4. Listo ✅<br/>
 Verás las conexiones:
 
-**Plataforma Turística - Desarrollo**
-**Plataforma Turística - Producción (staging)**
+**Plataforma Turística - Desarrollo**<br/>
+**Plataforma Turística - Producción (staging)**<br/>
 
 ---
 

@@ -159,23 +159,23 @@ Para facilitar la conexión a la base de datos local de desarrollo, el proyecto 
 #### 🧩 Instrucciones
 
 1. Abre pgAdmin en tu navegador:
-👉 http://localhost:5050
+  👉 http://localhost:5050
 
 2. Inicia sesión con las credenciales del archivo `.env`:
 
-- Email: `admin@admin.com`
-- Password: `admin`
+  - Email: `admin@admin.com`
+  - Password: `admin`
 
 3. Importa las conexiones preconfiguradas:
 
-- Ve a **File → Import Servers...**
-- Selecciona el archivo `pgadmin_servers.json` (ubicado en `./docs/tecnica/db/pgadmin_servers.json`)
+  - Ve a **File → Import Servers...**
+  - Selecciona el archivo `pgadmin_servers.json` (ubicado en `./docs/tecnica/db/pgadmin_servers.json`)
 
 4. Listo ✅<br/>
-Verás las conexiones:
+  Verás las conexiones:
 
-**Plataforma Turística - Desarrollo**<br/>
-**Plataforma Turística - Producción (staging)**<br/>
+    **Plataforma Turística - Desarrollo**<br/>
+    **Plataforma Turística - Producción (staging)**<br/>
 
 ---
 

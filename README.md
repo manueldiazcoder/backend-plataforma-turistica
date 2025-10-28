@@ -151,6 +151,34 @@ GET       | /health          | Verificar el estado general de la API
 
 ---
 
+### ⚙️ Configuración inicial de pgAdmin
+
+Para facilitar la conexión a la base de datos local de desarrollo, el proyecto incluye un archivo
+`pgadmin_servers.json` con los servidores preconfigurados de PostgreSQL (entornos dev y prod simulados).
+
+#### 🧩 Instrucciones
+
+1. Abre pgAdmin en tu navegador:
+👉 http://localhost:5050
+
+2. Inicia sesión con las credenciales del archivo `.env`:
+
+- Email: `admin@admin.com`
+- Password: `admin`
+
+3. Importa las conexiones preconfiguradas:
+
+- Ve a **File → Import Servers...**
+- Selecciona el archivo `pgadmin_servers.json` (ubicado en `./docs/tecnica/db/pgadmin_servers.json`)
+
+4. Listo ✅
+Verás las conexiones:
+
+**Plataforma Turística - Desarrollo**
+**Plataforma Turística - Producción (staging)**
+
+---
+
 ## 🔄 Flujo de trabajo con Git (GitFlow Simplificado)
 
 Este proyecto utiliza un flujo de trabajo basado en **GitFlow simplificado**, una práctica estándar en proyectos profesionales para mantener el código limpio, organizado y escalable a futuro.

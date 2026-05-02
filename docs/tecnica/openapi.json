@@ -1,0 +1,674 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "API Plataforma Turística Calima Darién",
+        "version": "1.0.0",
+        "description": "API v1 para el MVP del directorio de negocios, lugares turísticos y mapa interactivo de Calima Darién.",
+        "contact": {
+            "name": "Equipo Calima Explorer",
+            "email": "manuelcoder@hotmail.com"
+        },
+        "license": {
+            "name": "Community License (Non-Commercial)",
+            "url": "https://github.com/calima-explorer/LICENSE"
+        }
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8080/v1",
+            "description": "Desarrollo local"
+        },
+        {
+            "url": "https://api.calima.app/v1",
+            "description": "Producción (placeholder)"
+        }
+    ],
+    "security": [
+        {
+            "bearerAuth": []
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        },
+        "schemas": {
+            "UserDTO": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Juan Pérez"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "usuario@correo.com"
+                    },
+                    "role": {
+                        "type": "string",
+                        "enum": [
+                            "TOURIST",
+                            "OWNER",
+                            "ADMIN"
+                        ],
+                        "example": "OWNER"
+                    }
+                }
+            },
+            "AuthRegisterRequest": {
+                "type": "object",
+                "required": [
+                    "name",
+                    "email",
+                    "password",
+                    "role"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password"
+                    },
+                    "role": {
+                        "type": "string",
+                        "enum": [
+                            "TOURIST",
+                            "OWNER"
+                        ]
+                    }
+                }
+            },
+            "AuthLoginRequest": {
+                "type": "object",
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password"
+                    }
+                }
+            },
+            "AuthResponse": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string",
+                        "example": "eyJhbGciOi..."
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/UserDTO"
+                    }
+                }
+            },
+            "BusinessBase": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Hotel Paraíso"
+                    },
+                    "category": {
+                        "type": "string",
+                        "example": "Hotel"
+                    },
+                    "shortDescription": {
+                        "type": "string",
+                        "example": "Hotel con vista al lago."
+                    },
+                    "address": {
+                        "type": "string",
+                        "example": "Cra 5 #10-2"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "example": "+57 3001234567"
+                    },
+                    "lat": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 4.40012
+                    },
+                    "lon": {
+                        "type": "number",
+                        "format": "float",
+                        "example": -76.00023
+                    }
+                }
+            },
+            "BusinessDetailed": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/BusinessBase"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "description": {
+                                "type": "string",
+                                "example": "Habitaciones con vista al lago Calima y desayuno incluido."
+                            },
+                            "ownerId": {
+                                "type": "integer",
+                                "example": 23
+                            },
+                            "images": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "format": "uri",
+                                    "example": "https://cdn.calima.app/hoteles/paraíso1.jpg"
+                                }
+                            },
+                            "priceRange": {
+                                "type": "string",
+                                "example": "$$"
+                            }
+                        }
+                    }
+                ]
+            },
+            "BusinessCreateRequest": {
+                "type": "object",
+                "required": [
+                    "name",
+                    "category",
+                    "address",
+                    "lat",
+                    "lon"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "category": {
+                        "type": "string"
+                    },
+                    "shortDescription": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "address": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "lat": {
+                        "type": "number"
+                    },
+                    "lon": {
+                        "type": "number"
+                    }
+                }
+            },
+            "Place": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 55
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Parque Central"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Centro cultural del municipio."
+                    },
+                    "type": {
+                        "type": "string",
+                        "example": "Parque"
+                    },
+                    "lat": {
+                        "type": "number",
+                        "example": 4.39812
+                    },
+                    "lon": {
+                        "type": "number",
+                        "example": -76.00123
+                    }
+                }
+            },
+            "PaginationMeta": {
+                "type": "object",
+                "properties": {
+                    "page": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "limit": {
+                        "type": "integer",
+                        "example": 20
+                    },
+                    "totalItems": {
+                        "type": "integer",
+                        "example": 120
+                    },
+                    "totalPages": {
+                        "type": "integer",
+                        "example": 6
+                    }
+                }
+            },
+            "PaginatedBusinesses": {
+                "type": "object",
+                "properties": {
+                    "meta": {
+                        "$ref": "#/components/schemas/PaginationMeta"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/BusinessBase"
+                        }
+                    }
+                }
+            },
+            "ApiError": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "integer",
+                        "example": 404
+                    },
+                    "error": {
+                        "type": "string",
+                        "example": "Not Found"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "El negocio no fue encontrado."
+                    }
+                }
+            },
+            "GeoJSONFeature": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "example": "Feature"
+                    },
+                    "geometry": {
+                        "type": "object",
+                        "properties": {
+                            "type": {
+                                "type": "string",
+                                "example": "Point"
+                            },
+                            "coordinates": {
+                                "type": "array",
+                                "items": {
+                                    "type": "number"
+                                },
+                                "example": [
+                                    -76.002,
+                                    4.4
+                                ]
+                            }
+                        }
+                    },
+                    "properties": {
+                        "type": "object"
+                    }
+                }
+            },
+            "GeoJSONFeatureCollection": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "example": "FeatureCollection"
+                    },
+                    "features": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/GeoJSONFeature"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "paths": {
+        "/auth/register": {
+            "post": {
+                "summary": "Registrar usuario",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthRegisterRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Usuario creado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AuthResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/login": {
+            "post": {
+                "summary": "Iniciar sesión y obtener token JWT",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthLoginRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AuthResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Credenciales inválidas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/negocios": {
+            "get": {
+                "summary": "Listar negocios (con filtros y paginación)",
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Texto de búsqueda"
+                    },
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 20
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista paginada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaginatedBusinesses"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Registrar nuevo negocio (solo OWNER)",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BusinessCreateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Negocio creado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BusinessDetailed"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autorizado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/negocios/{id}": {
+            "get": {
+                "summary": "Detalle de un negocio",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Negocio encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BusinessDetailed"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Actualizar negocio (OWNER autenticado)",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BusinessCreateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Actualizado"
+                    }
+                }
+            }
+        },
+        "/lugares": {
+            "get": {
+                "summary": "Listar lugares turísticos",
+                "parameters": [
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Place"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/map": {
+            "get": {
+                "summary": "Obtener GeoJSON del mapa",
+                "responses": {
+                    "200": {
+                        "description": "GeoJSON FeatureCollection",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GeoJSONFeatureCollection"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/health": {
+            "get": {
+                "summary": "Health check",
+                "responses": {
+                    "200": {
+                        "description": "Servidor activo",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "UP"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

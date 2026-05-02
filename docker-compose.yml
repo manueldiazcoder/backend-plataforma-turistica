@@ -1,0 +1,164 @@
+services:
+  # ----------------------------------------------------------------
+  # Spring Boot App (Contenedor de Desarrollo para VS Code)
+  # ----------------------------------------------------------------
+  app:
+    # Revisa si es necesario activar esto para que se puedan ver las sesiones de opencode desde fuera del devcontainer.
+    hostname: manueld1az
+    # 1. Construye la imagen con el Dockerfile
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app_dev_calima_explorer
+    
+    # 2. Depende del servicio 'db' y espera a que esté saludable
+    depends_on:
+      db:
+        condition: service_healthy
+      flyway:
+        condition: service_completed_successfully
+        
+    # 3. Monta tu código y el caché de Maven
+    volumes:
+      # Montamos el proyecto directamente en la ruta larga
+      - .:/home/manueld1az/Projects/CalimaExplorer/backend:cached
+      # Mapea la config de Opencode del host al contenedor
+      # Origen (Tu PC) : Destino (Contenedor)
+      - ~/.config/opencode:/root/.config/opencode
+      # Carpeta de DATOS e HISTORIAL
+      - ~/.local/share/opencode:/root/.local/share/opencode
+      # Las Skills de opencode
+      - ~/.agents:/root/.agents
+      # Cache para acelerar la compilación
+      - maven_cache:/root/.m2
+      
+    # 4. Variables de Entorno cruciales para que Spring Boot encuentre la DB
+    environment:
+      DB_HOST_DEV: ${DB_HOST_DEV}
+      DB_PORT_DEV: ${DB_PORT_DEV}
+      POSTGRES_DB_DEV: ${POSTGRES_DB_DEV}
+      
+      SPRING_DATASOURCE_USERNAME: app_user
+      SPRING_DATASOURCE_PASSWORD: ${APP_USER_PASSWORD}
+
+      # Pasa TODAS las contraseñas que Flyway y la App necesitan
+      # Ya que application.yml las usa
+      APP_USER_PASSWORD: ${APP_USER_PASSWORD}
+      ADMIN_USER_PASSWORD: ${ADMIN_USER_PASSWORD}
+      BOOTSTRAP_ADMIN_USER_PASSWORD: ${BOOTSTRAP_ADMIN_USER_PASSWORD}
+      
+    # 5. Puertos (para que puedas acceder al 8080 de tu máquina local)
+    ports:
+      - "8080:8080" 
+      
+    # 6. Conexión a la red
+    networks:
+      - app-network
+
+    env_file: 
+      - .env
+
+
+
+  # ----------------------------------------------------------------
+  # Base de Datos (Infraestructura)
+  # ----------------------------------------------------------------
+  db:
+    image: postgis/postgis:14-3.3-alpine
+    container_name: ${DB_CONTAINER_NAME_DEV}
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER_DEV}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD_DEV}
+      POSTGRES_DB: ${POSTGRES_DB_DEV}
+      # Pasamos las contraseñas seguras para que el script .sh las use
+      BOOTSTRAP_ADMIN_USER_PASSWORD: ${BOOTSTRAP_ADMIN_USER_PASSWORD}
+      APP_USER_PASSWORD: ${APP_USER_PASSWORD}
+      ADMIN_USER_PASSWORD: ${ADMIN_USER_PASSWORD}
+    ports:
+      - "${DB_PORT_DEV}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      # Aquí montamos los scripts de inicialización (V0 y passwords)
+      - ./src/main/resources/db-init-scripts:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER_DEV}"]
+      interval: 5s
+      timeout: 5s
+      retries: 1
+    networks:
+      - app-network
+
+
+  # ----------------------------------------------------------------
+  # Flyway (Migraciones de Esquema V1+)
+  # ----------------------------------------------------------------
+  flyway:
+    image: flyway/flyway
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./src/main/resources/db:/flyway/sql
+      
+    environment:
+      FLYWAY_URL: jdbc:postgresql://db:5432/${POSTGRES_DB_DEV}
+      FLYWAY_USER: ${BOOTSTRAP_ADMIN_USER}
+      FLYWAY_PASSWORD: ${BOOTSTRAP_ADMIN_USER_PASSWORD}
+      FLYWAY_CONNECT_RETRIES: 1
+      FLYWAY_BASELINE_ON_MIGRATE: "true"
+      FLYWAY_PLACEHOLDERS_POSTGRES_DB: ${POSTGRES_DB_DEV}
+      # Flyway placeholders para las contraseñas de los roles
+      FLYWAY_PLACEHOLDERS_APP_USER_PASSWORD: ${APP_USER_PASSWORD}
+      FLYWAY_PLACEHOLDERS_ADMIN_USER_PASSWORD: ${ADMIN_USER_PASSWORD}
+      # NUEVO: Indicamos a Flyway que busque en la carpeta 'sql' (el destino del volumen) 
+      # y en todas sus subcarpetas. Por defecto, Flyway busca recursivamente en `filesystem:sql`,
+      # pero es buena práctica especificarlo.
+      FLYWAY_LOCATIONS: "filesystem:/flyway/sql"
+
+    # ✅ FIX: El comando debe ser solo 'migrate' y la config en las ENV.
+    command: migrate
+    networks:
+      - app-network
+
+
+
+  # ================================================
+  # pgAdmin 4
+  # ================================================
+  # Nota:
+  # Para configurar pgAdmin más fácilmente, importa el archivo `pgadmin_servers.json`
+  # incluido en el proyecto en la carpeta ./docs/tecnica/db/:
+  
+  #   1. Abre pgAdmin en http://localhost:5050
+  #   2. Inicia sesión (usa las credenciales de tu archivo .env)
+  #   3. Ve a File → Import Servers... y selecciona `pgadmin_servers.json`
+  
+  # ----------------------------------------------------------------
+  # PGAdmin (Administración)
+  # ----------------------------------------------------------------
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin_calima_explorer
+    depends_on:
+      - db
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    ports:
+      - "${PGADMIN_PORT}:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+      # Montamos el JSON de servidores para autoconfiguración
+      # ESTA LINEA RELAMENTE FUNCIONA?
+      # - ./docs/tecnica/db/pgadmin_servers.example.json:/pgadmin4/servers.json
+    networks:
+      - app-network
+
+volumes:
+  postgres_data:
+  pgadmin_data:
+  maven_cache:
+
+networks:
+  app-network:

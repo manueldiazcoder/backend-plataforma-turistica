@@ -1,0 +1,26 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "Calima Explorer - Desarrollo (ADMIN)",
+      "Group": "Desarrollo Local",
+      "Port": 5432,
+      "Username": "admin_user",
+      "Host": "db",
+      "MaintenanceDB": "calima_explorer",
+      "SSLMode": "prefer",
+      "StoreCredentials": true,
+      "PassFile": "/pgadmin4/servers.pass"
+    },
+    "2": {
+      "Name": "Calima Explorer - Desarrollo (APP USER)",
+      "Group": "Desarrollo Local",
+      "Port": 5432,
+      "Username": "app_user",
+      "Host": "db",
+      "MaintenanceDB": "calima_explorer",
+      "SSLMode": "prefer",
+      "StoreCredentials": true,
+      "PassFile": "/pgadmin4/servers.pass"
+    }
+  }
+}

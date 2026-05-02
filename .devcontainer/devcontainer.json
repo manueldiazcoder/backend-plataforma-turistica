@@ -1,0 +1,48 @@
+{
+	"name": "Plataforma Turística Dev",
+	"dockerComposeFile": "../docker-compose.yml",
+	
+	// ¡CAMBIO CLAVE! Conectarse al servicio que tiene Java/Maven
+	"service": "app", 
+	"workspaceFolder": "/home/manueld1az/Projects/CalimaExplorer/backend/",
+	"containerEnv": {
+    "OPENCODE_PROJECT_ID": "calima-explorer"
+	},
+
+	// Configuraciones de VS Code (Extensiones y Configs)
+	"customizations": {
+		"vscode": {
+			"settings": {
+                // Opcional: Asegura que el terminal siempre inicie aquí
+                "terminal.integrated.cwd": "/home/manueld1az/Projects/CalimaExplorer/backend"
+      },
+			"extensions": [
+				"vscjava.vscode-java-pack",
+				"vmware.vscode-boot-dev-pack",
+				"mtxr.sqltools",
+				"Codeium.codeium",
+				"qufiwefefwoyn.inline-sql-syntax",
+				"vivaxy.vscode-conventional-commits",
+				"streetsidesoftware.code-spell-checker",
+				"esbenp.prettier-vscode",
+				"DavidAnson.vscode-markdownlint",
+				"oderwat.indent-rainbow",
+				"vscjava.vscode-lombok",
+				"vscjava.vscode-java-upgrade",
+				"vscjava.migrate-java-to-azure",
+				"GitHub.copilot-chat",
+				"redhat.java",
+				"vscjava.vscode-maven",
+				"vscjava.vscode-java-dependency",
+				"vscjava.vscode-spring-boot-dashboard",
+				"vmware.vscode-spring-boot",
+				"vscjava.vscode-spring-initializr",
+				"vscjava.vscode-java-test",
+				"MermaidChart.vscode-mermaid-chart"
+			]
+		}
+	},
+
+	// Reenviar puertos para la DB, pgAdmin y tu aplicación Spring Boot
+	"forwardPorts": [5432, 5050, 8080]
+}
